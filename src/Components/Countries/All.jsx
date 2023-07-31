@@ -51,10 +51,6 @@ const All = () => {
       <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
         <div className="bg-white py-6 sm:py-8 lg:py-12">
           <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
-            <h2 className="mb-8 text-center text-2xl font-bold text-gray-800 md:mb-12 lg:text-3xl">
-              Collections of Countries
-            </h2>
-
             <div className="mx-auto max-w-lg rounded-lg border">
               <div className="flex flex-col gap-4 p-4 md:p-8">
                 <div>

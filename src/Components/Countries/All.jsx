@@ -1,79 +1,106 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
+import { SearchContext } from "../../App";
 import axios from "axios";
 import Image from "./Image";
 import Titles from "./Titles";
 import Data from "./Data";
+import Pagination from "../Pagination";
+import BackToTopButton from "../backToTop";
 
 const All = () => {
-  const [search, setSearch] = useState({
-    searchQuery: "",
-  });
+  const contextValues = useContext(SearchContext);
 
-  const handleChange = (e) => {
-    setSearch({
-      ...search,
-      [e.target.name]: e.target.value,
-    });
-  };
+  const [total, setTotalPages] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
+  const [data , setData] = useState([]);
   const [countriesData, setCountriesData] = useState([]);
+  const [countriesDataTemp, setCountriesDataTemp] = useState([]);
   const [filteredCountriesData, setFilteredCountriesData] = useState([]);
 
   const fetchData = async () => {
     try {
       const response = await axios.get("https://restcountries.com/v2/all");
-      setCountriesData(response.data);
-      setFilteredCountriesData(response.data);
+      const allCountriesData = response.data;
+      setData(allCountriesData);
+      dataFilter(currentPage , 10 ,  contextValues.sorting , allCountriesData);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
   };
 
+
+  const dataFilter = (page ,pageSize , type , data) =>
+  {
+
+     const sortedData = data.sort((a, b) => {
+       if (type === "asc") {
+         return b.population - a.population;
+       } else {
+         return a.population - b.population;
+       }
+     });
+    const totalPages = Math.ceil(sortedData.length / pageSize);
+    // Calculate the start and end indices for the current page
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+
+    // Get the data for the current page
+    const countriesDataForCurrentPage = sortedData.slice(
+      startIndex,
+      endIndex
+    );
+
+    setCountriesDataTemp(countriesDataForCurrentPage);
+
+    setCountriesData(sortedData);
+    setFilteredCountriesData(countriesDataForCurrentPage);
+    // Optionally, you can also set the total number of pages in your state for further use.
+    setTotalPages(totalPages);
+  }
+ 
+
   useEffect(() => {
     fetchData();
   }, []);
 
-  const  filterCountriesByName = (searchQuery) => {
-    searchQuery = searchQuery?.toLowerCase();
-    const results = countriesData.filter((item) =>
-      item.name.toLowerCase().includes(searchQuery)
-    );
+  useEffect(() => {
+    dataFilter(currentPage , 10 ,  contextValues.sorting , data);
+  }, [currentPage , contextValues.sorting]);
 
-    setFilteredCountriesData(results);
-  }
+
+  const filterCountriesByName = (searchQuery) => {
+    if (contextValues.text === "") {
+      setFilteredCountriesData(countriesDataTemp);
+    } else {
+      searchQuery = searchQuery?.toLowerCase();
+      const results = countriesData.filter((item) =>
+        item.name.toLowerCase().includes(searchQuery)
+      );
+
+      setFilteredCountriesData(results);
+    }
+  };
+
+  const handlePrevios = () => {
+    setCurrentPage(currentPage - 1);
+  };
+
+  const handleNext = () => {
+    setCurrentPage(currentPage + 1);
+  };
 
   useEffect(() => {
-    filterCountriesByName(search.searchQuery);
-  }, [search.searchQuery, countriesData]);
+    filterCountriesByName(contextValues.text);
+  }, [contextValues.text]);
 
   return (
     <div className="bg-white py-6 sm:py-8 lg:py-12">
       <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
-        <div className="bg-white py-6 sm:py-8 lg:py-12">
-          <div className="mx-auto max-w-screen-2xl px-4 md:px-8">
-            <div className="mx-auto max-w-lg rounded-lg border">
-              <div className="flex flex-col gap-4 p-4 md:p-8">
-                <div>
-                  <label className="mb-2 inline-block text-sm text-gray-800 sm:text-base">
-                    Search
-                  </label>
-                  <input
-                    type="text"
-                    name="searchQuery"
-                    value={search.searchQuery}
-                    onChange={handleChange}
-                    className="w-full rounded border bg-gray-50 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100 focus:ring"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
         <section className="text-gray-600 body-font">
           <div className="container mx-auto">
             <div className="flex flex-wrap -m-4">
-              {filteredCountriesData.map((item) => {
+              {filteredCountriesData?.map((item) => {
                 return (
                   <div key={item.alpha3Code} className="p-4 md:w-1/3">
                     <div className="h-full border-2 border-gray-200 border-opacity-60 rounded-lg overflow-hidden">
@@ -115,9 +142,17 @@ const All = () => {
                 );
               })}
             </div>
+
+            <Pagination
+              handlePrevios={handlePrevios}
+              handleNext={handleNext}
+              currentPage={currentPage}
+              total={total}
+            ></Pagination>
           </div>
         </section>
       </div>
+      <BackToTopButton></BackToTopButton>
     </div>
   );
 };

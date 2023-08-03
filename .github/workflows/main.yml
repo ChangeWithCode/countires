@@ -24,7 +24,7 @@ jobs:
       - name: Set up SSH key
         uses: webfactory/ssh-agent@v0.5.3
         with:
-          ssh-private-key: ${{ secrets.SERVER_SSH_PRIVATE_KEY }}
+          ssh-private-key: SHA256:Qt00LqPs5YGY5sdM24R1fSJvJI0QLyYyrYyBjXltirg qasimriaz814@gmail.com
 
       - name: Deploy React App
         run: |

@@ -1,7 +1,7 @@
 import Search from "./Search";
 import { useContext } from "react";
 import { SearchContext } from "../App";
-const Navigation = ({ setText , setSort }) => {
+const Navigation = ({ setText , setSort , setContinents }) => {
 
 
   const contextValues = useContext(SearchContext);
@@ -20,7 +20,7 @@ const Navigation = ({ setText , setSort }) => {
 
           <Search setText={setText}></Search>
 
-          <div class="grid grid-cols-1 gap-4 lg:grid-cols-3 lg:gap-8">
+          <div class="grid grid-cols-2 gap-4 lg:grid-cols-2 lg:gap-8">
             <div class="rounded-lg">
               <div className="mt-4">
                 <select
@@ -36,37 +36,21 @@ const Navigation = ({ setText , setSort }) => {
             <div class=" rounded-lg ">
               <div className="mt-4">
                 <select
-                  name="email"
+                  value={contextValues.continents} onChange={(e) => {setContinents(e.target.value)}}
                   class="w-full rounded border bg-gray-50 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100 focus:ring"
                 >
-                  <option value="">Please select</option>
-                  <option value="JM">John Mayer</option>
-                  <option value="SRV">Stevie Ray Vaughn</option>
-                  <option value="JH">Jimi Hendrix</option>
-                  <option value="BBK">B.B King</option>
-                  <option value="AK">Albert King</option>
-                  <option value="BG">Buddy Guy</option>
-                  <option value="EC">Eric Clapton</option>
+                  <option value="All">Show All Continents</option>
+                  <option value="asia">Asia</option>
+                  <option value="europe">Europe</option>
+                  <option value="Oceania">Oceania</option>
+                  <option value="Americas">Americas</option>
+                  <option value="Polar">Polar</option>
+                  <option value="Antarctic Ocean">Antarctic Ocean</option>
+                  <option value="Antarctic">Antarctic</option>
                 </select>
               </div>
             </div>
-            <div class="rounded-lg">
-              <div className="mt-4">
-                <select
-                  name="email"
-                  class="w-full rounded border bg-gray-50 px-3 py-2 text-gray-800 outline-none ring-indigo-300 transition duration-100 focus:ring"
-                >
-                  <option value="">Please select</option>
-                  <option value="JM">John Mayer</option>
-                  <option value="SRV">Stevie Ray Vaughn</option>
-                  <option value="JH">Jimi Hendrix</option>
-                  <option value="BBK">B.B King</option>
-                  <option value="AK">Albert King</option>
-                  <option value="BG">Buddy Guy</option>
-                  <option value="EC">Eric Clapton</option>
-                </select>
-              </div>
-            </div>
+            
           </div>
         </div>
       </div>

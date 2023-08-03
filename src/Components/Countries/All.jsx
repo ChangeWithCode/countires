@@ -13,7 +13,7 @@ const All = () => {
   const [total, setTotalPages] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
-  const [data , setData] = useState([]);
+  const [data, setData] = useState([]);
   const [countriesData, setCountriesData] = useState([]);
   const [countriesDataTemp, setCountriesDataTemp] = useState([]);
   const [filteredCountriesData, setFilteredCountriesData] = useState([]);
@@ -22,34 +22,41 @@ const All = () => {
     try {
       const response = await axios.get("https://restcountries.com/v2/all");
       const allCountriesData = response.data;
+
       setData(allCountriesData);
-      dataFilter(currentPage , 10 ,  contextValues.sorting , allCountriesData);
+      dataFilter(currentPage, 10, contextValues.sorting, allCountriesData);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
   };
 
+  const dataFilter = (page, pageSize, type, data, continents) => {
+    console.log(continents);
+    let filteredData = [...data];
+    if (continents && continents.length > 0 && continents != "All") {
+      filteredData = data.filter((country) =>
+        country.region.toLowerCase().includes(continents.toLowerCase())
+      );
+    }
 
-  const dataFilter = (page ,pageSize , type , data) =>
-  {
+    const sortedData = filteredData.sort((a, b) => {
+      if (type === "asc") {
+        return b.population - a.population;
+      } else {
+        return a.population - b.population;
+      }
+    });
 
-     const sortedData = data.sort((a, b) => {
-       if (type === "asc") {
-         return b.population - a.population;
-       } else {
-         return a.population - b.population;
-       }
-     });
+    if (continents) {
+      console.log(continents);
+    }
     const totalPages = Math.ceil(sortedData.length / pageSize);
     // Calculate the start and end indices for the current page
     const startIndex = (page - 1) * pageSize;
     const endIndex = startIndex + pageSize;
 
     // Get the data for the current page
-    const countriesDataForCurrentPage = sortedData.slice(
-      startIndex,
-      endIndex
-    );
+    const countriesDataForCurrentPage = sortedData.slice(startIndex, endIndex);
 
     setCountriesDataTemp(countriesDataForCurrentPage);
 
@@ -57,17 +64,21 @@ const All = () => {
     setFilteredCountriesData(countriesDataForCurrentPage);
     // Optionally, you can also set the total number of pages in your state for further use.
     setTotalPages(totalPages);
-  }
- 
+  };
 
   useEffect(() => {
     fetchData();
   }, []);
 
   useEffect(() => {
-    dataFilter(currentPage , 10 ,  contextValues.sorting , data);
-  }, [currentPage , contextValues.sorting]);
-
+    dataFilter(
+      currentPage,
+      10,
+      contextValues.sorting,
+      data,
+      contextValues.continents
+    );
+  }, [currentPage, contextValues]);
 
   const filterCountriesByName = (searchQuery) => {
     if (contextValues.text === "") {

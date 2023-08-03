@@ -22,7 +22,7 @@ jobs:
         run: sudo apt-get install openssh-client
 
       - name: Set Private Key Permissions
-        run: chmod 600 path/to/your/private_key
+        run: chmod 600 /Users/muhammadqasim/keys_test.pub
 
       - name: Set up SSH key
         uses: webfactory/ssh-agent@v0.5.3

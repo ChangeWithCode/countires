@@ -24,10 +24,22 @@ jobs:
       - name: Set Private Key Permissions
         run: chmod 600 /Users/muhammadqasim/keys_test.pub
 
+      - name: Configure SSH key
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_PRIVATE_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan 149.28.215.39 >> ~/.ssh/authorized_keys
+        
+
       - name: Set up SSH key
         uses: webfactory/ssh-agent@v0.5.3
         with:
           ssh-private-key: "SHA256:Qt00LqPs5YGY5sdM24R1fSJvJI0QLyYyrYyBjXltirg qasimriaz814@gmail.com"
+
+          
 
       - name: Deploy React App
         run: |

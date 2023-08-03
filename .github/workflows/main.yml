@@ -22,11 +22,11 @@ jobs:
         run: sudo apt-get install openssh-client
 
       - name: Set Private Key Permissions
-        run: chmod 600 /Users/muhammadqasim/keys_test.pub
+        run: chmod 600 /Users/muhammadqasim/.ssh/id_rsa
 
       - name: Configure SSH key
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_PRIVATE_KEY }}
+          SSH_PRIVATE_KEY: "SHA256:JwFoYsRDQ5EAs9rKhSjnritC/5JwlS0470ctZ+vCRIk qasimriaz814@gmail.com"
         run: |
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa

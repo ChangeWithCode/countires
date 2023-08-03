@@ -21,6 +21,9 @@ jobs:
       - name: Install SSH client
         run: sudo apt-get install openssh-client
 
+      - name: Set Private Key Permissions
+        run: chmod 600 path/to/your/private_key
+
       - name: Set up SSH key
         uses: webfactory/ssh-agent@v0.5.3
         with:

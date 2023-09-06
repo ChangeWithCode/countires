@@ -24,7 +24,7 @@ const All = () => {
       const allCountriesData = response.data;
 
       setData(allCountriesData);
-      dataFilter(currentPage, 10, contextValues.sorting, allCountriesData);
+      dataFilter(currentPage, 12, contextValues.sorting, allCountriesData);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
@@ -94,11 +94,15 @@ const All = () => {
   };
 
   const handlePrevios = () => {
-    setCurrentPage(currentPage - 1);
+    if (currentPage !== 1) {
+      setCurrentPage(currentPage - 1);
+    }
   };
 
   const handleNext = () => {
-    setCurrentPage(currentPage + 1);
+    if (currentPage !== total) {
+      setCurrentPage(currentPage + 1);
+    }
   };
 
   useEffect(() => {
